@@ -23,3 +23,34 @@ export const runSignIn = async (data) => {
         return { error: e };
     }
 };
+
+/* 사용자 정보 가져오기 */
+export const fetchUser = async (token) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/user`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        return { data: response.data };
+    } catch (e) {
+        return { error: e };
+    }
+};
+
+/* 사용자 정보 수정 */
+export const updateUser = async (token, data) => {
+    try {
+        const response = await axios.patch(`${BASE_URL}/profile`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        return { data: response.data };
+    } catch (e) {
+        return { error: e };
+    }
+};
