@@ -1,10 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Button from './Button';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Header() {
     const navigate = useNavigate();
 
+    const { pathname } = useLocation();
     const { isAuthenticated, logout } = useAuth();
 
     /* 로그아웃 */
@@ -27,7 +28,11 @@ export default function Header() {
                         <Button category="box" label="로그아웃" handleClick={handleSignOut} />
                     </>
                 ) : (
-                    <Button category="box" label="로그인" handleClick={() => navigate('/signin')} />
+                    <>
+                        {pathname === '/' && (
+                            <Button category="box" label="로그인" handleClick={() => navigate('/signin')} />
+                        )}
+                    </>
                 )}
             </div>
         </div>
