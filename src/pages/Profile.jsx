@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import AuthForm from '../components/AuthForm';
-import { fetchUser, updateUser } from '../api/MoneyfulPublicPolicy';
+import { fetchUser, updateUser } from '../api/Auth';
 
 const token = localStorage.getItem('accessToken');
 

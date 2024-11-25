@@ -1,5 +1,5 @@
 import { AuthProvider } from './contexts/AuthContext';
-import Router from './routers/Router';
+import Router from './routes/Router';
 
 function App() {
     return (

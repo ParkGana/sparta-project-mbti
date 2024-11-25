@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthForm from '../components/AuthForm';
 import Button from '../components/Button';
 import { useForm } from '../hooks/useForm';
-import { runSignIn } from '../api/MoneyfulPublicPolicy';
+import { runSignIn } from '../api/Auth';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function SignIn() {
