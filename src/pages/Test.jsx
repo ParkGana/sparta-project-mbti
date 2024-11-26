@@ -6,8 +6,13 @@ import { calculateMBTI } from '../utils/calculateMBTI';
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { mbtiDescriptions } from '../data/descriptions';
+import { createTestResult } from '../api/TestResult';
+import { fetchUser } from '../api/Auth';
+import { formatDate } from '../utils/formatDate';
 
 export default function Test() {
+    const token = localStorage.getItem('accessToken');
+
     const navigate = useNavigate();
 
     const { values, handleSelect, handleReset } = useForm(
@@ -17,9 +22,30 @@ export default function Test() {
     const [result, setResult] = useState('');
 
     /* 테스트 완료 */
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
         setResult(calculateMBTI(values));
+
+        const { data, error } = await fetchUser(token);
+
+        // 오류 발생
+        if (error) {
+            window.alert(`${error.status} 오류가 발생했습니다.`);
+        }
+        // 성공
+        else if (data.success) {
+            await createTestResult({
+                created_at: formatDate(),
+                user: data,
+                result: calculateMBTI(values),
+                isVisibility: true
+            });
+        }
+        // 실패
+        else {
+            window.alert('사용자 정보를 불러오지 못했습니다.');
+        }
     };
 
     /* 테스트 초기화 */
