@@ -21,3 +21,21 @@ export const createTestResult = async (data) => {
         return { error: e };
     }
 };
+
+/* 테스트 결과 데이터 삭제 */
+export const deleteTestResult = async (id) => {
+    try {
+        await axios.delete(`${BASE_URL}/${id}`);
+    } catch (e) {
+        return { error: e };
+    }
+};
+
+/* 테스트 결과 데이터 공개 여부 수정 */
+export const updateTestResultVisibility = async (id, visibility) => {
+    try {
+        await axios.patch(`${BASE_URL}/${id}`, { isVisibility: visibility });
+    } catch (e) {
+        return { error: e };
+    }
+};
