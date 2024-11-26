@@ -14,9 +14,15 @@ export function useForm(initialValues) {
         setValues(newAnswers);
     };
 
+    /* 값 초기화 */
+    const handleReset = () => {
+        setValues(initialValues);
+    };
+
     return {
         values,
         handleChange,
-        handleSelect
+        handleSelect,
+        handleReset
     };
 }
