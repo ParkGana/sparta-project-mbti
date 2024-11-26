@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import AuthForm from '../components/AuthForm';
 import { fetchUser, updateUser } from '../api/Auth';
 
-const token = localStorage.getItem('accessToken');
-
 export default function Profile() {
+    const token = localStorage.getItem('accessToken');
+
     const [nickname, setNickname] = useState('');
 
     useEffect(() => {
@@ -26,7 +26,7 @@ export default function Profile() {
         };
 
         fetchUserData();
-    }, []);
+    }, [token]);
 
     /* 프로필 수정 */
     const handleUpdateUser = async () => {
