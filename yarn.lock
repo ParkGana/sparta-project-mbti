@@ -534,6 +534,18 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.27.4.tgz#67d516613c9f2fe42e2d8b78e252d0003179d92c"
   integrity sha512-3j4jx1TppORdTAoBJRd+/wJRGCPC0ETWkXOecJ6PPZLj6SptXkrXcNqdj0oclbKML6FkQltdz7bBA3rUSirZug==
 
+"@tanstack/query-core@5.60.6":
+  version "5.60.6"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.60.6.tgz#0dd33fe231b0d18bf66d0c615b29899738300658"
+  integrity sha512-tI+k0KyCo1EBJ54vxK1kY24LWj673ujTydCZmzEZKAew4NqZzTaVQJEuaG1qKj2M03kUHN46rchLRd+TxVq/zQ==
+
+"@tanstack/react-query@^5.61.3":
+  version "5.61.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.61.3.tgz#0187b73b87adaeaed09f3d9717e35b507175fe23"
+  integrity sha512-c3Oz9KaCBapGkRewu7AJLhxE9BVqpMcHsd3KtFxSd7FSCu2qGwqfIN37zbSGoyk6Ix9LGZBNHQDPI6GpWABnmA==
+  dependencies:
+    "@tanstack/query-core" "5.60.6"
+
 "@tinyhttp/accepts@2.2.3":
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/@tinyhttp/accepts/-/accepts-2.2.3.tgz#be7601206eeda8bd8350ad82a2307808efcb7831"
