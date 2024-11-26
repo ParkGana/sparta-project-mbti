@@ -2,7 +2,7 @@ export default function Button({ category, label, handleClick }) {
     return (
         <>
             {category === 'form' && (
-                <button className="w-80 bg-primary rounded-lg text-base text-white p-2">{label}</button>
+                <button className="w-full bg-primary rounded-lg text-base text-white p-2">{label}</button>
             )}
 
             {category === 'text' && (
