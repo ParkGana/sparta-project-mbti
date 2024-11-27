@@ -1,44 +1,24 @@
-import { deleteTestResultAPI, getTestResultsAPI, updateTestResultAPI } from '../api/TestResult';
 import { mbtiDescriptions } from '../data/descriptions';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTestResults } from '../hooks/useTestResults';
 
 export default function Result() {
-    const queryClient = useQueryClient();
-
     const { user } = useAuth();
-
     const {
-        data: results,
-        isPending,
-        isError
-    } = useQuery({
-        queryKey: ['testResults'],
-        queryFn: getTestResultsAPI,
-        onError: (error) => window.alert(error.response.data || error.message)
-    });
-
-    const { mutate: updateMutate } = useMutation({
-        mutationFn: updateTestResultAPI,
-        onSuccess: () => queryClient.invalidateQueries(['testResults']),
-        onError: (error) => window.alert(error.response.data || error.message)
-    });
-
-    const { mutate: deleteMutate } = useMutation({
-        mutationFn: deleteTestResultAPI,
-        onSuccess: () => queryClient.invalidateQueries(['testResults']),
-        onError: (error) => window.alert(error.response.data || error.message)
-    });
+        fetchQuery: { data: results, isPending, isError },
+        deleteMutation,
+        updateMutation
+    } = useTestResults();
 
     /* 결과 데이터 수정 */
     const handleUpdateResult = async (id, isVisibility) => {
-        updateMutate({ id, data: { isVisibility } });
+        updateMutation.mutate({ id, data: { isVisibility } });
     };
 
     /* 결과 데이터 삭제 */
     const handleDeleteResult = async (id) => {
-        deleteMutate(id);
+        deleteMutation.mutate(id);
     };
 
     if (isPending) return <div>로딩 중...</div>;

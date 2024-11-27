@@ -6,28 +6,20 @@ import { calculateMBTI } from '../utils/calculateMBTI';
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { mbtiDescriptions } from '../data/descriptions';
-import { createTestResultAPI } from '../api/TestResult';
 import { formatDate } from '../utils/formatDate';
 import { useAuth } from '../contexts/AuthContext';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTestResults } from '../hooks/useTestResults';
 
 export default function Test() {
     const navigate = useNavigate();
-    const queryClient = useQueryClient();
 
     const { user } = useAuth();
-
+    const { createMutation } = useTestResults();
     const { values, handleSelect, handleReset } = useForm(
         Array(questions.length).fill({ type: '', answer: '', value: '' })
     );
 
     const [result, setResult] = useState('');
-
-    const { mutate } = useMutation({
-        mutationFn: createTestResultAPI,
-        onSuccess: () => queryClient.invalidateQueries(['testResults']),
-        onError: (error) => window.alert(error.response.data || error.message)
-    });
 
     /* 테스트 결과 확인 */
     const handleSubmitTest = async (e) => {
@@ -35,7 +27,7 @@ export default function Test() {
 
         setResult(calculateMBTI(values));
 
-        mutate({
+        createMutation.mutate({
             created_at: formatDate(),
             userId: user?.id,
             result: calculateMBTI(values),
