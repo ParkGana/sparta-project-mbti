@@ -8,7 +8,7 @@ export default function Home() {
         <div className="flex flex-col items-center gap-8 p-10">
             <p className="text-5xl text-black font-bold">무료 성격 테스트</p>
             <p className="text-xl text-black">자신의 성격 유형을 확인할 수 있도록 솔직하게 답변해 주세요.</p>
-            <div className="flex gap-8">
+            <div className="max-w-screen-xl flex gap-8">
                 <div className="w-1/3 flex flex-col gap-4 bg-white rounded-lg shadow-lg p-8">
                     <p className="text-2xl text-black font-bold">성격 유형 검사</p>
                     <p className="text-base text-black">
