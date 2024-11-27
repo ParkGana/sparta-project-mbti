@@ -1,11 +1,13 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5000/testResults';
+const api = axios.create({
+    baseURL: 'http://localhost:5000/testResults'
+});
 
 /* 테스트 결과 데이터 목록 가져오기 */
 export const getTestResultsAPI = async () => {
     try {
-        const response = await axios.get(BASE_URL);
+        const response = await api.get('');
 
         return { data: response.data };
     } catch (e) {
@@ -16,7 +18,7 @@ export const getTestResultsAPI = async () => {
 /* 테스트 결과 데이터 생성 */
 export const createTestResultAPI = async (data) => {
     try {
-        await axios.post(BASE_URL, data);
+        await api.post('', data);
     } catch (e) {
         return { error: e.response.data.message || e.message };
     }
@@ -25,7 +27,7 @@ export const createTestResultAPI = async (data) => {
 /* 테스트 결과 데이터 삭제 */
 export const deleteTestResultAPI = async (id) => {
     try {
-        await axios.delete(`${BASE_URL}/${id}`);
+        await api.delete(`/${id}`);
     } catch (e) {
         return { error: e.response.data.message || e.message };
     }
@@ -34,7 +36,7 @@ export const deleteTestResultAPI = async (id) => {
 /* 테스트 결과 데이터 수정 */
 export const updateTestResultAPI = async (id, data) => {
     try {
-        await axios.patch(`${BASE_URL}/${id}`, data);
+        await api.patch(`/${id}`, data);
     } catch (e) {
         return { error: e.response.data.message || e.message };
     }

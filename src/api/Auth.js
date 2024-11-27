@@ -1,11 +1,13 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://moneyfulpublicpolicy.co.kr';
+const api = axios.create({
+    baseURL: 'https://moneyfulpublicpolicy.co.kr'
+});
 
 /* 회원가입 */
 export const signupAPI = async (data) => {
     try {
-        const response = await axios.post(`${BASE_URL}/register`, data);
+        const response = await api.post('/register', data);
 
         return { data: response.data };
     } catch (e) {
@@ -16,7 +18,7 @@ export const signupAPI = async (data) => {
 /* 로그인 */
 export const signinAPI = async (data) => {
     try {
-        const response = await axios.post(`${BASE_URL}/login`, data);
+        const response = await api.post('/login', data);
 
         return { data: response.data };
     } catch (e) {
@@ -27,7 +29,7 @@ export const signinAPI = async (data) => {
 /* 사용자 정보 가져오기 */
 export const fetchUserAPI = async (token) => {
     try {
-        const response = await axios.get(`${BASE_URL}/user`, {
+        const response = await api.get('/user', {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -42,7 +44,7 @@ export const fetchUserAPI = async (token) => {
 /* 사용자 정보 수정 */
 export const updateUserAPI = async (token, data) => {
     try {
-        const response = await axios.patch(`${BASE_URL}/profile`, data, {
+        const response = await api.patch('/profile', data, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${token}`
