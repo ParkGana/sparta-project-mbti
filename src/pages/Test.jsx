@@ -6,14 +6,14 @@ import { calculateMBTI } from '../utils/calculateMBTI';
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { mbtiDescriptions } from '../data/descriptions';
-import { createTestResult } from '../api/TestResult';
-import { fetchUser } from '../api/Auth';
+import { createTestResultAPI } from '../api/TestResult';
 import { formatDate } from '../utils/formatDate';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Test() {
-    const token = localStorage.getItem('accessToken');
-
     const navigate = useNavigate();
+
+    const { user } = useAuth();
 
     const { values, handleSelect, handleReset } = useForm(
         Array(questions.length).fill({ type: '', answer: '', value: '' })
@@ -21,35 +21,26 @@ export default function Test() {
 
     const [result, setResult] = useState('');
 
-    /* 테스트 완료 */
-    const handleSubmit = async (e) => {
+    /* 테스트 결과 확인 */
+    const handleSubmitTest = async (e) => {
         e.preventDefault();
 
         setResult(calculateMBTI(values));
 
-        const { data, error } = await fetchUser(token);
+        const { error } = await createTestResultAPI({
+            created_at: formatDate(),
+            userId: user?.id,
+            result: calculateMBTI(values),
+            isVisibility: true
+        });
 
-        // 오류 발생
         if (error) {
-            window.alert(`${error.status} 오류가 발생했습니다.`);
-        }
-        // 성공
-        else if (data.success) {
-            await createTestResult({
-                created_at: formatDate(),
-                user: data,
-                result: calculateMBTI(values),
-                isVisibility: true
-            });
-        }
-        // 실패
-        else {
-            window.alert('사용자 정보를 불러오지 못했습니다.');
+            window.alert(error);
         }
     };
 
     /* 테스트 초기화 */
-    const handleResetSelect = () => {
+    const handleResetTest = () => {
         setResult('');
         handleReset();
     };
@@ -61,7 +52,7 @@ export default function Test() {
                     <p className="text-2xl text-black font-bold">당신의 MBTI는 {result}입니다.</p>
                     <p className="text-base text-black">{mbtiDescriptions[result]}</p>
                     <Button category="box" label="결과 페이지로 이동하기" handleClick={() => navigate('/result')} />
-                    <Button category="text" label="다시 검사하기" handleClick={handleResetSelect} />
+                    <Button category="text" label="다시 검사하기" handleClick={handleResetTest} />
                 </div>
             ) : (
                 <div className="flex flex-col items-center gap-10 bg-white rounded-lg shadow-lg p-8">
@@ -70,7 +61,7 @@ export default function Test() {
                         label="결과 확인하기"
                         data={values}
                         handleSelect={handleSelect}
-                        handleSubmit={handleSubmit}
+                        handleSubmit={handleSubmitTest}
                     />
                 </div>
             )}

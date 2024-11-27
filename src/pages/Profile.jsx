@@ -1,49 +1,30 @@
-import { useEffect, useState } from 'react';
 import AuthForm from '../components/AuthForm';
-import { fetchUser, updateUser } from '../api/Auth';
+import { updateUserAPI } from '../api/Auth';
+import { useAuth } from '../contexts/AuthContext';
+import { useForm } from '../hooks/useForm';
 
 export default function Profile() {
     const token = localStorage.getItem('accessToken');
 
-    const [nickname, setNickname] = useState('');
+    const { user } = useAuth();
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            const { data, error } = await fetchUser(token);
+    const { values, handleChange } = useForm({
+        nickname: user?.nickname
+    });
 
-            // 오류 발생
-            if (error) {
-                window.alert(`${error.status} 오류가 발생했습니다.`);
-            }
-            // 성공
-            else if (data.success) {
-                setNickname(data.nickname);
-            }
-            // 실패
-            else {
-                window.alert('유저 정보를 불러오지 못했습니다.');
-            }
-        };
+    /* 사용자 정보 수정 */
+    const handleUpdateUser = async (e) => {
+        e.preventDefault();
 
-        fetchUserData();
-    }, [token]);
+        const { data, error } = await updateUserAPI(token, values);
 
-    /* 프로필 수정 */
-    const handleUpdateUser = async () => {
-        const { data, error } = await updateUser(token, { nickname });
-
-        // 오류 발생
         if (error) {
-            window.alert(`${error.status} 오류가 발생했습니다.`);
-        }
-        // 성공
-        else if (data.success) {
-            window.alert('프로필이 수정되었습니다.');
+            window.alert(error);
+        } else if (data.success) {
+            window.alert('사용자 정보가 수정되었습니다.');
             window.location.reload();
-        }
-        // 실패
-        else {
-            window.alert('유저 정보를 불러오지 못했습니다.');
+        } else {
+            window.alert('사용자 정보를 수정하지 못했습니다.');
         }
     };
 
@@ -55,8 +36,8 @@ export default function Profile() {
                 <AuthForm
                     category="profile"
                     label="프로필 수정"
-                    data={{ nickname }}
-                    handleChange={(e) => setNickname(e.target.value)}
+                    data={values}
+                    handleChange={handleChange}
                     handleSubmit={handleUpdateUser}
                 />
             </div>

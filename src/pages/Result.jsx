@@ -1,45 +1,34 @@
 import { useEffect, useState } from 'react';
-import { deleteTestResult, getTestResults, updateTestResultVisibility } from '../api/TestResult';
+import { deleteTestResultAPI, getTestResultsAPI, updateTestResultAPI } from '../api/TestResult';
 import { mbtiDescriptions } from '../data/descriptions';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
 
 export default function Result() {
-    const [results, setResults] = useState([]);
-
     const { user } = useAuth();
+
+    const [results, setResults] = useState([]);
 
     useEffect(() => {
         fetchResults();
     }, [user]);
 
+    /* 결과 데이터 목록 가져오기 */
     const fetchResults = async () => {
-        const { data, error } = await getTestResults();
+        const { data, } = await getTestResultsAPI();
 
-        // 오류 발생
-        if (error) {
-            window.alert(`${error.status} 오류가 발생했습니다.`);
-        }
-        // 성공
-        else if (data) {
-            const filterData = data.filter((item) => item.user.id === user?.id || item.isVisibility);
-            setResults(filterData);
-        }
-        // 실패
-        else {
-            window.alert('테스트 결과를 불러오지 못했습니다.');
-        }
+        setResults(data.filter((item) => item.userId === user?.id || item.isVisibility));
     };
 
-    /* 결과 데이터 공개 여부 변경 */
-    const handleUpdateVisibility = async (id, visibility) => {
-        await updateTestResultVisibility(id, visibility);
+    /* 결과 데이터 수정 */
+    const handleUpdateResult = async (id, isVisibility) => {
+        await updateTestResultAPI(id, { isVisibility });
         fetchResults();
     };
 
     /* 결과 데이터 삭제 */
-    const handleDelete = async (id) => {
-        await deleteTestResult(id);
+    const handleDeleteResult = async (id) => {
+        await deleteTestResultAPI(id);
         fetchResults();
     };
 
@@ -50,20 +39,24 @@ export default function Result() {
                 {results.map((result) => (
                     <div key={result.id} className="max-w-screen-sm border-4 border-primary rounded-lg">
                         <div className="flex justify-between border-b border-primary p-4">
-                            <p className="text-base text-black font-bold">{result.user.nickname}</p>
+                            <p className="text-base text-black font-bold">{result.userId}</p>
                             <p className="text-base text-gray-500">{result.created_at}</p>
                         </div>
                         <div className="flex flex-col gap-4 p-4">
                             <p className="text-xl text-primary font-bold">{result.result}</p>
                             <p className="text-base text-black">{mbtiDescriptions[result.result]}</p>
-                            {user?.id === result.user.id && (
+                            {user?.id === result.userId && (
                                 <div className="flex justify-center gap-4">
                                     <Button
                                         category="box"
                                         label={`${result.isVisibility ? '비' : ''}공개로 전환`}
-                                        handleClick={() => handleUpdateVisibility(result.id, !result.isVisibility)}
+                                        handleClick={() => handleUpdateResult(result.id, !result.isVisibility)}
                                     />
-                                    <Button category="box" label="삭제" handleClick={() => handleDelete(result.id)} />
+                                    <Button
+                                        category="box"
+                                        label="삭제"
+                                        handleClick={() => handleDeleteResult(result.id)}
+                                    />
                                 </div>
                             )}
                         </div>

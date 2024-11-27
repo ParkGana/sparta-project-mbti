@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthForm from '../components/AuthForm';
 import Button from '../components/Button';
 import { useForm } from '../hooks/useForm';
-import { runSignIn } from '../api/Auth';
+import { signinAPI } from '../api/Auth';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function SignIn() {
@@ -19,20 +19,15 @@ export default function SignIn() {
     const handleSignIn = async (e) => {
         e.preventDefault();
 
-        const { data, error } = await runSignIn(values);
+        const { data, error } = await signinAPI(values);
 
-        // 오류 발생
         if (error) {
-            window.alert(`${error.status} 오류가 발생했습니다.`);
-        }
-        // 성공
-        else if (data.success) {
+            window.alert(error);
+        } else if (data.success) {
             window.alert('로그인에 성공했습니다.');
-            login(data.accessToken);
+            await login(data.accessToken);
             navigate('/');
-        }
-        // 실패
-        else {
+        } else {
             window.alert('로그인에 실패했습니다.');
         }
     };

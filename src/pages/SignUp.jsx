@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthForm from '../components/AuthForm';
 import Button from '../components/Button';
 import { useForm } from '../hooks/useForm';
-import { runSignUp } from '../api/Auth';
+import { signupAPI } from '../api/Auth';
 
 export default function SignUp() {
     const navigate = useNavigate();
@@ -17,19 +17,14 @@ export default function SignUp() {
     const handleSignUp = async (e) => {
         e.preventDefault();
 
-        const { data, error } = await runSignUp(values);
+        const { data, error } = await signupAPI(values);
 
-        // 오류 발생
         if (error) {
-            window.alert(`${error.status} 오류가 발생했습니다.`);
-        }
-        // 성공
-        else if (data.success) {
+            window.alert(error);
+        } else if (data.success) {
             window.alert('회원가입에 성공했습니다.');
             navigate('/signin');
-        }
-        // 실패
-        else {
+        } else {
             window.alert('회원가입에 실패했습니다.');
         }
     };

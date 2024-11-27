@@ -1,21 +1,19 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { fetchUser } from '../api/Auth';
+import { fetchUserAPI } from '../api/Auth';
 
 const AuthContext = createContext();
 
-const token = localStorage.getItem('accessToken');
-
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(!!token);
+    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('accessToken'));
     const [user, setUser] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
 
-        const fetchUserData = async () => {
-            const { data, error } = await fetchUser(token);
+        const fetchUser = async () => {
+            const { data, error } = await fetchUserAPI(token);
 
-            if (error) {
+            if (error || !data.success) {
                 setIsAuthenticated(false);
                 setUser(null);
             } else {
@@ -24,17 +22,17 @@ export const AuthProvider = ({ children }) => {
             }
         };
 
-        fetchUserData();
+        fetchUser();
     }, [isAuthenticated]);
 
     /* 로그인 */
-    const login = (token) => {
+    const login = async (token) => {
         localStorage.setItem('accessToken', token);
         setIsAuthenticated(true);
     };
 
     /* 로그아웃 */
-    const logout = () => {
+    const logout = async () => {
         localStorage.removeItem('accessToken');
         setIsAuthenticated(false);
     };

@@ -3,29 +3,29 @@ import axios from 'axios';
 const BASE_URL = 'https://moneyfulpublicpolicy.co.kr';
 
 /* 회원가입 */
-export const runSignUp = async (data) => {
+export const signupAPI = async (data) => {
     try {
         const response = await axios.post(`${BASE_URL}/register`, data);
 
         return { data: response.data };
     } catch (e) {
-        return { error: e };
+        return { error: e.response.data.message || e.message };
     }
 };
 
 /* 로그인 */
-export const runSignIn = async (data) => {
+export const signinAPI = async (data) => {
     try {
         const response = await axios.post(`${BASE_URL}/login`, data);
 
         return { data: response.data };
     } catch (e) {
-        return { error: e };
+        return { error: e.response.data.message || e.message };
     }
 };
 
 /* 사용자 정보 가져오기 */
-export const fetchUser = async (token) => {
+export const fetchUserAPI = async (token) => {
     try {
         const response = await axios.get(`${BASE_URL}/user`, {
             headers: {
@@ -35,12 +35,12 @@ export const fetchUser = async (token) => {
 
         return { data: response.data };
     } catch (e) {
-        return { error: e };
+        return { error: e.response.data.message || e.message };
     }
 };
 
 /* 사용자 정보 수정 */
-export const updateUser = async (token, data) => {
+export const updateUserAPI = async (token, data) => {
     try {
         const response = await axios.patch(`${BASE_URL}/profile`, data, {
             headers: {
@@ -51,6 +51,6 @@ export const updateUser = async (token, data) => {
 
         return { data: response.data };
     } catch (e) {
-        return { error: e };
+        return { error: e.response.data.message || e.message };
     }
 };
