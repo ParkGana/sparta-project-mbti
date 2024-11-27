@@ -7,7 +7,7 @@ import { fireErrorSwal, fireSuccessSwal } from '../utils/fireSwal';
 export default function Profile() {
     const token = localStorage.getItem('accessToken');
 
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
 
     const { values, handleChange } = useForm({
         nickname: user?.nickname
@@ -24,7 +24,7 @@ export default function Profile() {
         } else if (data.success) {
             fireSuccessSwal({
                 text: '사용자 정보가 수정되었습니다.',
-                afterConfirm: () => window.location.reload()
+                afterConfirm: async () => await updateUser()
             });
         } else {
             fireErrorSwal('사용자 정보를 수정하지 못했습니다.');

@@ -5,6 +5,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('accessToken'));
+    const [isSynchronized, setIsSynchronized] = useState(true);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -23,7 +24,9 @@ export const AuthProvider = ({ children }) => {
         };
 
         fetchUser();
-    }, [isAuthenticated]);
+
+        setIsSynchronized(true);
+    }, [isAuthenticated, isSynchronized]);
 
     /* 로그인 */
     const login = async (token) => {
@@ -37,7 +40,16 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
     };
 
-    return <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>{children}</AuthContext.Provider>;
+    /* 사용자 정보 변경 */
+    const updateUser = async () => {
+        setIsSynchronized(false);
+    };
+
+    return (
+        <AuthContext.Provider value={{ isAuthenticated, user, login, logout, updateUser }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
 export const useAuth = () => useContext(AuthContext);
