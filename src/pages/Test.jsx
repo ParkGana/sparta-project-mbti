@@ -9,6 +9,7 @@ import { mbtiDescriptions } from '../data/descriptions';
 import { formatDate } from '../utils/formatDate';
 import { useAuth } from '../contexts/AuthContext';
 import { useTestResults } from '../hooks/useTestResults';
+import { fireErrorSwal } from '../utils/fireSwal';
 
 export default function Test() {
     const navigate = useNavigate();
@@ -25,14 +26,18 @@ export default function Test() {
     const handleSubmitTest = async (e) => {
         e.preventDefault();
 
-        setResult(calculateMBTI(values));
+        if (values.filter((value) => value.answer === '').length > 0) {
+            fireErrorSwal('정확한 검사를 위해 모든 항목에 답해주세요.');
+        } else {
+            setResult(calculateMBTI(values));
 
-        createMutation.mutate({
-            created_at: formatDate(),
-            userId: user?.id,
-            result: calculateMBTI(values),
-            isVisibility: true
-        });
+            createMutation.mutate({
+                created_at: formatDate(),
+                userId: user?.id,
+                result: calculateMBTI(values),
+                isVisibility: true
+            });
+        }
     };
 
     /* 테스트 초기화 */
