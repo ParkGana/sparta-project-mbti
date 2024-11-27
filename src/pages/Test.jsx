@@ -9,9 +9,11 @@ import { mbtiDescriptions } from '../data/descriptions';
 import { createTestResultAPI } from '../api/TestResult';
 import { formatDate } from '../utils/formatDate';
 import { useAuth } from '../contexts/AuthContext';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function Test() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const { user } = useAuth();
 
@@ -21,22 +23,24 @@ export default function Test() {
 
     const [result, setResult] = useState('');
 
+    const { mutate } = useMutation({
+        mutationFn: createTestResultAPI,
+        onSuccess: () => queryClient.invalidateQueries(['testResults']),
+        onError: (error) => window.alert(error.response.data || error.message)
+    });
+
     /* 테스트 결과 확인 */
     const handleSubmitTest = async (e) => {
         e.preventDefault();
 
         setResult(calculateMBTI(values));
 
-        const { error } = await createTestResultAPI({
+        mutate({
             created_at: formatDate(),
             userId: user?.id,
             result: calculateMBTI(values),
             isVisibility: true
         });
-
-        if (error) {
-            window.alert(error);
-        }
     };
 
     /* 테스트 초기화 */

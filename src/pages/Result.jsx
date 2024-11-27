@@ -1,36 +1,49 @@
-import { useEffect, useState } from 'react';
 import { deleteTestResultAPI, getTestResultsAPI, updateTestResultAPI } from '../api/TestResult';
 import { mbtiDescriptions } from '../data/descriptions';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export default function Result() {
+    const queryClient = useQueryClient();
+
     const { user } = useAuth();
 
-    const [results, setResults] = useState([]);
+    const {
+        data: results,
+        isPending,
+        isError
+    } = useQuery({
+        queryKey: ['testResults'],
+        queryFn: getTestResultsAPI,
+        onError: (error) => window.alert(error.response.data || error.message)
+    });
 
-    useEffect(() => {
-        fetchResults();
-    }, [user]);
+    const { mutate: updateMutate } = useMutation({
+        mutationFn: updateTestResultAPI,
+        onSuccess: () => queryClient.invalidateQueries(['testResults']),
+        onError: (error) => window.alert(error.response.data || error.message)
+    });
 
-    /* 결과 데이터 목록 가져오기 */
-    const fetchResults = async () => {
-        const { data, } = await getTestResultsAPI();
-
-        setResults(data.filter((item) => item.userId === user?.id || item.isVisibility));
-    };
+    const { mutate: deleteMutate } = useMutation({
+        mutationFn: deleteTestResultAPI,
+        onSuccess: () => queryClient.invalidateQueries(['testResults']),
+        onError: (error) => window.alert(error.response.data || error.message)
+    });
 
     /* 결과 데이터 수정 */
     const handleUpdateResult = async (id, isVisibility) => {
-        await updateTestResultAPI(id, { isVisibility });
-        fetchResults();
+        updateMutate({ id, data: { isVisibility } });
     };
 
     /* 결과 데이터 삭제 */
     const handleDeleteResult = async (id) => {
-        await deleteTestResultAPI(id);
-        fetchResults();
+        deleteMutate(id);
     };
+
+    if (isPending) return <div>로딩 중...</div>;
+
+    if (isError) return <div>데이터 조회 중 오류 발생</div>;
 
     return (
         <div className="flex justify-center p-10">
