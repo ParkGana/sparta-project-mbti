@@ -3,6 +3,7 @@ import AuthForm from '../components/AuthForm';
 import Button from '../components/Button';
 import { useForm } from '../hooks/useForm';
 import { signupAPI } from '../api/Auth';
+import { fireErrorSwal, fireSuccessSwal } from '../utils/fireSwal';
 
 export default function SignUp() {
     const navigate = useNavigate();
@@ -20,12 +21,14 @@ export default function SignUp() {
         const { data, error } = await signupAPI(values);
 
         if (error) {
-            window.alert(error);
+            fireErrorSwal(error);
         } else if (data.success) {
-            window.alert('회원가입에 성공했습니다.');
-            navigate('/signin');
+            fireSuccessSwal({
+                text: '회원가입에 성공했습니다.',
+                afterConfirm: () => navigate('/signin')
+            });
         } else {
-            window.alert('회원가입에 실패했습니다.');
+            fireErrorSwal('회원가입에 실패했습니다.');
         }
     };
 

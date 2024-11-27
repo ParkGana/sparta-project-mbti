@@ -2,6 +2,7 @@ import AuthForm from '../components/AuthForm';
 import { updateUserAPI } from '../api/Auth';
 import { useAuth } from '../contexts/AuthContext';
 import { useForm } from '../hooks/useForm';
+import { fireErrorSwal, fireSuccessSwal } from '../utils/fireSwal';
 
 export default function Profile() {
     const token = localStorage.getItem('accessToken');
@@ -19,12 +20,14 @@ export default function Profile() {
         const { data, error } = await updateUserAPI(token, values);
 
         if (error) {
-            window.alert(error);
+            fireErrorSwal(error);
         } else if (data.success) {
-            window.alert('사용자 정보가 수정되었습니다.');
-            window.location.reload();
+            fireSuccessSwal({
+                text: '사용자 정보가 수정되었습니다.',
+                afterConfirm: () => window.location.reload()
+            });
         } else {
-            window.alert('사용자 정보를 수정하지 못했습니다.');
+            fireErrorSwal('사용자 정보를 수정하지 못했습니다.');
         }
     };
 

@@ -4,6 +4,7 @@ import Button from '../components/Button';
 import { useForm } from '../hooks/useForm';
 import { signinAPI } from '../api/Auth';
 import { useAuth } from '../contexts/AuthContext';
+import { fireErrorSwal, fireSuccessSwal } from '../utils/fireSwal';
 
 export default function SignIn() {
     const navigate = useNavigate();
@@ -22,13 +23,17 @@ export default function SignIn() {
         const { data, error } = await signinAPI(values);
 
         if (error) {
-            window.alert(error);
+            fireErrorSwal(error);
         } else if (data.success) {
-            window.alert('로그인에 성공했습니다.');
-            await login(data.accessToken);
-            navigate('/');
+            fireSuccessSwal({
+                text: '로그인에 성공했습니다.',
+                afterConfirm: async () => {
+                    await login(data.accessToken);
+                    navigate('/');
+                }
+            });
         } else {
-            window.alert('로그인에 실패했습니다.');
+            fireErrorSwal('로그인에 실패했습니다.');
         }
     };
 
