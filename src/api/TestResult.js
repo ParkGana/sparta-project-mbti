@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000/testResults'
+    baseURL: 'https://locrian-canary-petalite.glitch.me/testResults'
 });
 
 /* 테스트 결과 데이터 목록 가져오기 */
